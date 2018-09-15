@@ -1,8 +1,14 @@
 #include"projet.h"
 
-//All methods to use nodes
+int main(int argc, char* argv[])
+{	
+	nd* n = creer_noeud(1);
+	afficher_tout_noeud(n);
+	detruire_tout_noeud(n);
+	return 0;
+}
 
-typedef struct noeud* nd;
+//All methods to use nodes
 
 /*
 *	Function creer_noeud
@@ -12,8 +18,8 @@ typedef struct noeud* nd;
 */
 nd creer_noeud(int val)
 {
-	nd res = (nd)malloc(sizeof(noeud));
-	res->val=elt;
+	nd res = (nd)malloc(sizeof(struct noeud));
+	res->val=val;
 	res->suivant=NULL;
 	return res;
 }
@@ -45,10 +51,10 @@ void supprimer_noeud_fin(nd n)
 {
 	if(n!=NULL && n->suivant != NULL)
 	{
-		nd courant = n
-		while(courant -> suivant != NULL)
+		nd courant = n;
+		while(courant->suivant != NULL)
 		{	
-			supprimer_neud_fin(courant);
+			supprimer_noeud_fin(courant);
 			free(courant);
 			courant = NULL;
 		}
@@ -61,20 +67,25 @@ void supprimer_noeud_fin(nd n)
 *	Parameters:
 *	<nd n>	:(noeud) Struct of node
 */
-void afficher_tout(nd n)
+void afficher_tout_noeud(nd n)
 {
 	nd courant = n;
 	if (courant == NULL)
 	{
-		printf(“Noeud vide \n”);
+		printf("Noeud vide \n");
 	} else {
-		while (courant ->suivant != null)
+		if (courant->suivant == NULL)
 		{
-			printf(%d” , courant-> val);
-			courant=courant->suivant;
+			printf("%d" , courant->val);
+		} else {
+			while (courant->suivant != NULL)
+			{
+				printf("%d" , courant->val);
+				courant=courant->suivant;
+			}
 		}
 	}
-	printf(“\n”);
+	printf("\n");
 }
 
 /*
@@ -83,13 +94,13 @@ void afficher_tout(nd n)
 *	Parameters:
 *	<nd* n>	:(noeud*) Pointer on node struct
 */
-void detruire_tout (nd* n)
+void detruire_tout_noeud(nd* n)
 {
-	if(*n != NULL)
+	if((*n) != NULL)
 	{
-		if(*n->suivant != NULL)
-		{
-			detruire_tout (&(*n->suivant));
+		if(((*n)->suivant) != NULL)
+		{	
+			detruire_tout_noeud((&((*n)->suivant)));
 		}
 		free (*n);
 		*n = NULL;
@@ -99,8 +110,6 @@ void detruire_tout (nd* n)
 
 //All methods to use trees
 
-typedef struct arbre* ab;
-
 /*
 *	Function creer_arbre
 *	Create tree.
@@ -109,12 +118,12 @@ typedef struct arbre* ab;
 */
 ab creer_arbre(int val)
 {
-	ab arb = (ab)malloc(sizeof(arbre));
+	ab arb = (ab)malloc(sizeof(struct arbre));
 
-	noeud n = creer_noeud(val);
-	noeud* n_fils_droite = NULL;
-	noeud* n_fils_gauche = NULL;
-	noeud* pere = NULL;
+	nd* n = creer_noeud(val);
+	nd* n_fils_droite = NULL;
+	nd* n_fils_gauche = NULL;
+	nd* pere = NULL;
 
 	return arb;
 }
