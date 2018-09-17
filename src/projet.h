@@ -9,7 +9,8 @@
 struct noeud
 {
 	int val;
-	struct noeud* suivant; 
+	struct noeud* fils_droit;
+	struct noeud* fils_gauche;  
 };
 
 typedef struct noeud* nd;
@@ -17,9 +18,7 @@ typedef struct noeud* nd;
 struct arbre 
 {
 	nd* n;
-	nd* n_fils_droite;
-	nd* n_fils_gauche;
-	nd* pere;
+	nd* racine;
 };
 
 typedef struct arbre* ab;
