@@ -8,7 +8,6 @@ int main(int argc, char* argv[])
 	n->fils_droit = n1;
 	n->fils_gauche = n2; 
 	afficher_tout_noeud(n);
-	//supprimer_noeud_fin(n);
 	detruire_tout_noeud(&n);
 	return 0;
 }
@@ -65,30 +64,15 @@ void ajouter_noeud_fin(nd n, int val)
 *	Parameters:
 *	<nd n>	:(noeud) Struct of node
 */
-/*void supprimer_noeud_fin(nd n)
+void supprimer_noeud_fin(ab arbre)
 {
-	if(n!=NULL && n->fils_droit != NULL)
+	if(arbre!=NULL)
 	{
-		nd courant = n;
-		while(courant->fils_droit != NULL)
-		{	
-			if(courant->fils_gauche != NULL)
-			{
-				courant = courant->fils_gauche;
-				supprimer_noeud_fin(courant);
-			}
-
-			if(courant->fils_droit != NULL)
-			{
-				courant = courant->fils_droit;
-				supprimer_noeud_fin(courant);
-			}
-
-			free(courant);
-			courant = NULL;
-		}
+		nd courant = arbre->last;
+		free(courant);
+		courant = NULL;
 	}
-}*/
+}
 
 /*
 *	Function afficher_tout
@@ -103,6 +87,7 @@ void afficher_tout_noeud(nd n)
 	{
 		printf("Noeud vide \n");
 	} else {
+		printf("Cle = %d\n", courant->val);
 		if(courant->fils_gauche)
 		{
 			afficher_tout_noeud(courant->fils_gauche);
@@ -112,8 +97,6 @@ void afficher_tout_noeud(nd n)
 		{
 			afficher_tout_noeud(courant->fils_droit);
 		}
-
-		printf("Cle = %d\n", courant->val);
 	}
 }
 
@@ -156,6 +139,7 @@ ab creer_arbre(int val)
 
 	nd* n = creer_noeud(val);
 	nd* racine = NULL;
+	nd* last = n;
 
 	return arb;
 }

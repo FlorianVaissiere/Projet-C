@@ -19,6 +19,7 @@ struct arbre
 {
 	nd* n;
 	nd* racine;
+	nd* last;
 };
 
 typedef struct arbre* ab;
@@ -27,7 +28,7 @@ nd creer_noeud(int val);
 
 void ajouter_noeud_fin(nd n, int val);
 
-void supprimer_noeud_fin(nd n);
+void supprimer_noeud_fin(ab arbre);
 
 void afficher_tout_noeud(nd n);
 
