@@ -36,4 +36,8 @@ void detruire_tout_noeud(nd* n);
 
 ab creer_arbre(int val);
 
+void detruire_arbre(ab arbre);
+
+void trouver_dans_arbre(ab arbre, int val);
+
 #endif

@@ -138,8 +138,107 @@ ab creer_arbre(int val)
 	ab arb = (ab)malloc(sizeof(struct arbre));
 
 	nd* n = creer_noeud(val);
-	nd* racine = NULL;
+	nd* racine = n;
 	nd* last = n;
 
 	return arb;
+}
+
+/*
+*	Function detruire_arbre
+*	Delete tree.
+*	Parameters:
+*	<ab arbre>	:(arbre)	Struct of tree
+*/
+void detruire_arbre(ab arbre)
+{
+	if(arbre != NULL)
+	{
+		nd* node = &arbre->racine;
+		detruire_tout_noeud(&arbre->racine);
+
+		free (arbre->n);
+		(arbre->n) = NULL;
+		free (arbre->racine);
+		(arbre->racine) = NULL;
+		free (arbre->last);
+		(arbre->last) = NULL;
+		free (arbre);
+		(arbre) = NULL;
+	}
+}
+
+/*
+*	Function trouver_dans_arbre
+*	Delete tree.
+*	Parameters:
+*	<ab arbre>	:(arbre)	Struct of tree
+*/
+void trouver_dans_arbre(ab arbre, int val)
+{
+	nd courant = arbre->racine;
+	if (arbre == NULL)
+	{
+		printf("Arbre vide \n");
+	}
+	else if (courant == NULL)
+	{
+		printf("Noeud vide \n");
+	} else {
+		if(courant->fils_droit->val > val)
+		{	
+			if (courant->fils_gauche->val != val)
+			{
+				courant = courant->fils_gauche;
+			} else {
+				return 1;
+			}
+		}
+		else 
+		{
+			if (courant->fils_droit->val != val)
+			{
+				courant = courant->fils_droit;
+			} else {
+				return 1;
+			}
+		}
+	}
+}
+
+/*
+*	Function trouver_prefixe
+*	Delete tree.
+*	Parameters:
+*	<ab arbre>	:(arbre)	Struct of tree
+*/
+void trouver_prefixe(ab arbre, int val)
+{
+	nd courant = arbre->racine;
+	char prefixe;
+	if (arbre == NULL)
+	{
+		printf("Arbre vide \n");
+	}
+	else if (courant == NULL)
+	{
+		printf("Noeud vide \n");
+	} else {
+		if(courant->fils_droit->val < val)
+		{	
+			if(courant->fils_droit->val == val){
+				return prefixe;
+			}
+			courant = courant->fils_droit;
+			prefixe = prefixe + '1';
+		}
+		else 
+		{
+			if(courant->fils_gauche->val == val){
+				return prefixe;
+			}
+			courant = courant->fils_gauche;
+			prefixe = prefixe + '0';
+		}
+	}
 }
