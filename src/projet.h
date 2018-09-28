@@ -8,6 +8,7 @@
 
 struct noeud
 {
+	char alphabet;
 	int val;
 	struct noeud* fils_droit;
 	struct noeud* fils_gauche;  
@@ -24,9 +25,9 @@ struct arbre
 
 typedef struct arbre* ab;
 
-nd creer_noeud(int val);
+nd creer_noeud(int val, char letter);
 
-void ajouter_noeud_fin(nd n, int val);
+void ajouter_noeud_fin(nd n, int val, char letter);
 
 void supprimer_noeud_fin(ab arbre);
 
@@ -34,10 +35,18 @@ void afficher_tout_noeud(nd n);
 
 void detruire_tout_noeud(nd* n);
 
-ab creer_arbre(int val);
+ab creer_arbre(int val, char letter);
 
 void detruire_arbre(ab arbre);
 
 void trouver_dans_arbre(ab arbre, int val);
+
+char trouver_prefixe(ab arbre, char letter);
+
+int creer_code_lettre(ab arbre, char letter);
+
+void compresse(ab arbre, FILE* fichierL, FILE* fichierE);
+
+void decompresse(ab arbre, FILE* fichierL, FILE* fichierE);v
 
 #endif

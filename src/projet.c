@@ -2,13 +2,16 @@
 
 int main(int argc, char* argv[])
 {	
-	nd n = creer_noeud(1);
-	nd n1 = creer_noeud(3);
-	nd n2 = creer_noeud(2);
-	n->fils_droit = n1;
+
+	FILE* fichierL = NULL;
+	FILE* fichierE = NULL;
+	// nd n = creer_noeud(1);
+	// nd n1 = creer_noeud(3);
+	// nd n2 = creer_noeud(2);
+	/*n->fils_droit = n1;
 	n->fils_gauche = n2; 
 	afficher_tout_noeud(n);
-	detruire_tout_noeud(&n);
+	detruire_tout_noeud(&n);*/
 	return 0;
 }
 
@@ -19,13 +22,15 @@ int main(int argc, char* argv[])
 *	Create node.
 *	Parameters:
 *	<int val>	:(int)	 Value we need to create new node
+*	<char letter>	:(char)		Symbol we need to found
 */
-nd creer_noeud(int val)
+nd creer_noeud(int val, char letter)
 {
 	nd res = (nd)malloc(sizeof(struct noeud));
-	res->val=val;
-	res->fils_droit=NULL;
-	res->fils_gauche=NULL;
+	res->val 			= val;
+	res->alphabet 		= letter;
+	res->fils_droit 	= NULL;
+	res->fils_gauche 	= NULL;
 	return res;
 }
 
@@ -35,8 +40,9 @@ nd creer_noeud(int val)
 *	Parameters:
 *	<nd n>	:(noeud) Struct of node
 *	<int val>	:(int)	 Value we need to create new node
+*	<char letter>	:(char)		Symbol we need to found
 */
-void ajouter_noeud_fin(nd n, int val)
+void ajouter_noeud_fin(nd n, int val, char letter)
 {
 	nd courant = n;
 
@@ -52,9 +58,9 @@ void ajouter_noeud_fin(nd n, int val)
 
 	if (courant->fils_droit == NULL)
 	{
-		courant->fils_droit = creer_noeud(val);
+		courant->fils_droit = creer_noeud(val,letter);
 	} else {
-		courant->fils_gauche = creer_noeud(val);
+		courant->fils_gauche = creer_noeud(val,letter);
 	}
 }
 
@@ -62,7 +68,7 @@ void ajouter_noeud_fin(nd n, int val)
 *	Function supprimer_noeud_fin
 *	Delete last node.
 *	Parameters:
-*	<nd n>	:(noeud) Struct of node
+*	<ab arbre>	:(arbre) Struct of arbre
 */
 void supprimer_noeud_fin(ab arbre)
 {
@@ -87,7 +93,7 @@ void afficher_tout_noeud(nd n)
 	{
 		printf("Noeud vide \n");
 	} else {
-		printf("Cle = %d\n", courant->val);
+		printf("Cle = %d Lettre = %s\n", courant->val, courant->alphabet);
 		if(courant->fils_gauche)
 		{
 			afficher_tout_noeud(courant->fils_gauche);
@@ -132,14 +138,14 @@ void detruire_tout_noeud(nd* n)
 *	Create tree.
 *	Parameters:
 *	<int val>	:(int)	 Value we need to create the first node of tree
+*	<char letter>	:(char)		Symbol we need to found
 */
-ab creer_arbre(int val)
+ab creer_arbre(int val, char letter)
 {
-	ab arb = (ab)malloc(sizeof(struct arbre));
-
-	nd* n = creer_noeud(val);
-	nd* racine = n;
-	nd* last = n;
+	ab arb 		= (ab)malloc(sizeof(struct arbre));
+	nd* n 		= creer_noeud(val,letter);
+	nd* racine 	= n;
+	nd* last 	= n;
 
 	return arb;
 }
@@ -208,11 +214,13 @@ void trouver_dans_arbre(ab arbre, int val)
 
 /*
 *	Function trouver_prefixe
-*	Delete tree.
+*	Return code for letter.
 *	Parameters:
-*	<ab arbre>	:(arbre)	Struct of tree
+*	<ab arbre>		:(arbre)	Struct of tree
+*	<char letter>	:(char)		Symbol we need to found
+*	<int val>		:(int)		Value
 */
-void trouver_prefixe(ab arbre, int val)
+char trouver_prefixe(ab arbre, char letter)
 {
 	nd courant = arbre->racine;
 	char prefixe;
@@ -224,21 +232,113 @@ void trouver_prefixe(ab arbre, int val)
 	{
 		printf("Noeud vide \n");
 	} else {
-		if(courant->fils_droit->val < val)
+		if(courant->fils_gauche->alphabet == letter)
 		{	
-			if(courant->fils_droit->val == val){
+			prefixe = prefixe + '0';
+			courant = courant->fils_gauche;
+			return prefixe;
+		}
+		else 
+		{
+			if(courant->fils_droit->alphabet == letter){
+				prefixe = prefixe + '1';
 				return prefixe;
 			}
 			courant = courant->fils_droit;
 			prefixe = prefixe + '1';
 		}
-		else 
-		{
-			if(courant->fils_gauche->val == val){
-				return prefixe;
-			}
-			courant = courant->fils_gauche;
-			prefixe = prefixe + '0';
-		}
 	}
+	return prefixe;
 }
+
+/*
+*	Function creer_code
+*	Return code for letter.
+*	Parameters:
+*	<ab arbre>		:(arbre)	Struct of tree
+*	<char letter>	:(char)		Symbol we need to found
+*	<int val>		:(int)		Symbol we need to found
+*/
+int creer_code_lettre(ab arbre, char letter)
+{
+	int tab_code;
+	int tab_code = int(trouver_prefixe(arbre, letter));
+	return tab_code;
+}
+
+/*
+*	Function compresse
+*	Return code text.
+*	Parameters:
+*	<ab arbre>			:(arbre)Struct of tree
+*	<FILE* fichierL>	:(FILE)	Pointer on reading file
+*	<FILE* fichierE>	:(FILE)	Pointer on writing file
+*/
+void compresse(ab arbre, FILE* fichierL, FILE* fichierE)
+{
+	fichierL fopen("lecture.txt", "r");
+	fichierE fopen("ecriture.txt", "w");
+	int caractere = 0;
+	char code;
+
+
+	if (fichierL != NULL)
+	{
+		do
+		{
+			caractere = fgetc(fichierL);
+			code = creer_code_lettre(arbre, caractere)
+			fprintf(fichierE, "%c\n", code);
+		} while (caractereActuel != EOF);
+	}
+	else
+	{
+		printf("Impossible d'ouvrir le fichier lecture.txt");
+	}
+
+	fclose(fichierL);
+	fclose(fichierE);
+	return 0;
+}
+
+/*
+*	Function decompresse
+*	Return code text.
+*	Parameters:
+*	<ab arbre>			:(arbre)Struct of tree
+*	<FILE* fichierL>	:(FILE)	Pointer on reading file
+*	<FILE* fichierE>	:(FILE)	Pointer on writing file	
+*/
+void decompresse(ab arbre, FILE* fichierL, FILE* fichierE)
+{
+	fichierL fopen("ecriture.txt", "r");
+	fichierE fopen("lecture.txt", "w");
+	int caractere = 0;
+	char decode;
+
+	if (fichierL != NULL)
+	{
+		do
+		{
+			caractere = fgetc(fichierE);
+			decode = decode_lettre(arbre, caractere)
+			fprintf(fichierL, "%c\n", decode);
+		} while (caractereActuel != EOF);
+	}
+	else
+	{
+		printf("Impossible d'ouvrir le fichier ecriture.txt");
+	}
+
+	fclose(fichierL);
+	fclose(fichierE);
+	return 0;
+}
+
+/*
+*	Function decode_lettre
+*	Return decode text.
+*	Parameters:
+*	
+*/
+
