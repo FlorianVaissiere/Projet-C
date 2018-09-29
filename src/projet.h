@@ -39,7 +39,7 @@ ab creer_arbre(int val, char letter);
 
 void detruire_arbre(ab arbre);
 
-void trouver_dans_arbre(ab arbre, int val);
+int trouver_dans_arbre(ab arbre, int val);
 
 char trouver_prefixe(ab arbre, char letter);
 
@@ -47,6 +47,8 @@ int creer_code_lettre(ab arbre, char letter);
 
 void compresse(ab arbre, FILE* fichierL, FILE* fichierE);
 
-void decompresse(ab arbre, FILE* fichierL, FILE* fichierE);v
+void decompresse(ab arbre, FILE* fichierL, FILE* fichierE);
+
+char decode_lettre(ab arbre, char* letter);
 
 #endif

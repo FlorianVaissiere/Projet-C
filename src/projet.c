@@ -8,10 +8,10 @@ int main(int argc, char* argv[])
 	// nd n = creer_noeud(1);
 	// nd n1 = creer_noeud(3);
 	// nd n2 = creer_noeud(2);
-	/*n->fils_droit = n1;
-	n->fils_gauche = n2; 
-	afficher_tout_noeud(n);
-	detruire_tout_noeud(&n);*/
+	// n->fils_droit = n1;
+	// n->fils_gauche = n2; 
+	// afficher_tout_noeud(n);
+	// detruire_tout_noeud(&n);
 	return 0;
 }
 
@@ -180,7 +180,7 @@ void detruire_arbre(ab arbre)
 *	Parameters:
 *	<ab arbre>	:(arbre)	Struct of tree
 */
-void trouver_dans_arbre(ab arbre, int val)
+int trouver_dans_arbre(ab arbre, int val)
 {
 	nd courant = arbre->racine;
 	if (arbre == NULL)
@@ -240,7 +240,8 @@ char trouver_prefixe(ab arbre, char letter)
 		}
 		else 
 		{
-			if(courant->fils_droit->alphabet == letter){
+			if(courant->fils_droit->alphabet == letter)
+			{
 				prefixe = prefixe + '1';
 				return prefixe;
 			}
@@ -257,12 +258,11 @@ char trouver_prefixe(ab arbre, char letter)
 *	Parameters:
 *	<ab arbre>		:(arbre)	Struct of tree
 *	<char letter>	:(char)		Symbol we need to found
-*	<int val>		:(int)		Symbol we need to found
 */
 int creer_code_lettre(ab arbre, char letter)
 {
 	int tab_code;
-	int tab_code = int(trouver_prefixe(arbre, letter));
+	tab_code = atoi(trouver_prefixe(arbre, letter));
 	return tab_code;
 }
 
@@ -276,10 +276,10 @@ int creer_code_lettre(ab arbre, char letter)
 */
 void compresse(ab arbre, FILE* fichierL, FILE* fichierE)
 {
-	fichierL fopen("lecture.txt", "r");
-	fichierE fopen("ecriture.txt", "w");
+	fichierL = fopen("lecture.txt", "r");
+	fichierE = fopen("ecriture.txt", "w");
 	int caractere = 0;
-	char code;
+	int code;
 
 
 	if (fichierL != NULL)
@@ -287,9 +287,10 @@ void compresse(ab arbre, FILE* fichierL, FILE* fichierE)
 		do
 		{
 			caractere = fgetc(fichierL);
-			code = creer_code_lettre(arbre, caractere)
-			fprintf(fichierE, "%c\n", code);
-		} while (caractereActuel != EOF);
+			code = creer_code_lettre(arbre, caractere);
+			fprintf(fichierE, "%d\n", code);
+			fprintf(stdout, "%d\n", code);
+		} while (caractere != EOF);
 	}
 	else
 	{
@@ -311,9 +312,9 @@ void compresse(ab arbre, FILE* fichierL, FILE* fichierE)
 */
 void decompresse(ab arbre, FILE* fichierL, FILE* fichierE)
 {
-	fichierL fopen("ecriture.txt", "r");
-	fichierE fopen("lecture.txt", "w");
-	int caractere = 0;
+	fichierL = fopen("ecriture.txt", "r");
+	fichierE = fopen("lecture.txt", "w");
+	char caractere = 0;
 	char decode;
 
 	if (fichierL != NULL)
@@ -321,9 +322,10 @@ void decompresse(ab arbre, FILE* fichierL, FILE* fichierE)
 		do
 		{
 			caractere = fgetc(fichierE);
-			decode = decode_lettre(arbre, caractere)
+			decode = decode_lettre(arbre, &caractere);
 			fprintf(fichierL, "%c\n", decode);
-		} while (caractereActuel != EOF);
+			fprintf(stdout, "%c\n", decode);
+		} while (caractere != EOF);
 	}
 	else
 	{
@@ -339,6 +341,31 @@ void decompresse(ab arbre, FILE* fichierL, FILE* fichierE)
 *	Function decode_lettre
 *	Return decode text.
 *	Parameters:
-*	
+*	<ab arbre>		:(arbre)	Struct of tree
+*	<char letter>	:(char)		Symbol we need to found
 */
-
+char decode_lettre(ab arbre, char* letter)
+{
+	nd courant = arbre->racine;
+	char prefixe;
+	if (arbre == NULL)
+	{
+		printf("Arbre vide \n");
+	}
+	else if (courant == NULL)
+	{
+		printf("Noeud vide \n");
+	} else {
+		for(int i = 0; i<strlen(letter); i++)
+		{
+			if(letter[i] == "1")
+			{
+				courant = courant->fils_droit;	
+			} else {
+				courant = courant->fils_gauche;
+			}
+		}
+		prefixe = courant->alphabet;
+	}
+	return prefixe;
+}
