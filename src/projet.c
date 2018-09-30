@@ -178,7 +178,7 @@ void detruire_arbre(ab arbre)
 {
 	if(arbre != NULL)
 	{
-		detruire_tout_noeud(&arbre->racine);
+		detruire_tout_noeud(arbre->racine);
 
 		free (arbre->racine);
 		(arbre->racine) = NULL;
