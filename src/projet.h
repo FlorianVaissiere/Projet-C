@@ -5,6 +5,19 @@
 #include<stdio.h>
 #include<time.h>
 #include<math.h>
+#include<string.h>
+#include<unistd.h>
+
+#define BUFF_SIZE 1024
+#define ALPHABET    26
+
+#define SPACES      32
+
+#define BEG_LOWER   97
+#define END_LOWER  122
+
+#define BEG_UPPER   65
+#define END_UPPER   90
 
 struct noeud
 {
@@ -18,9 +31,7 @@ typedef struct noeud* nd;
 
 struct arbre 
 {
-	nd* n;
 	nd* racine;
-	nd* last;
 };
 
 typedef struct arbre* ab;
@@ -29,13 +40,13 @@ nd creer_noeud(int val, char letter);
 
 void ajouter_noeud_fin(nd n, int val, char letter);
 
-void supprimer_noeud_fin(ab arbre);
-
 void afficher_tout_noeud(nd n);
 
 void detruire_tout_noeud(nd* n);
 
-ab creer_arbre(int val, char letter);
+ab creer_arbre(nd node);
+
+ab assembler_arbre(nd* node);
 
 void detruire_arbre(ab arbre);
 
@@ -50,5 +61,7 @@ void compresse(ab arbre, FILE* fichierL, FILE* fichierE);
 void decompresse(ab arbre, FILE* fichierL, FILE* fichierE);
 
 char decode_lettre(ab arbre, char* letter);
+
+nd frequence (FILE* fichierL);
 
 #endif

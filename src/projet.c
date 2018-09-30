@@ -2,16 +2,22 @@
 
 int main(int argc, char* argv[])
 {	
-
 	FILE* fichierL = NULL;
 	FILE* fichierE = NULL;
-	// nd n = creer_noeud(1);
-	// nd n1 = creer_noeud(3);
-	// nd n2 = creer_noeud(2);
-	// n->fils_droit = n1;
-	// n->fils_gauche = n2; 
-	// afficher_tout_noeud(n);
-	// detruire_tout_noeud(&n);
+
+	char choix = fscanf(stdin, "Voulez vous utiliser un fichier ou l'entré standard? (f/s)");
+	if(choix == "s")
+	{
+		fichierL = fopen("lecture.txt", "w");
+		char compresse = fscanf(stdin, "Que désirez-vous compresser?");
+		fprintf(fichierL, "%c\n", compresse);
+		fclose(fichierL);
+	}
+
+	ab arbre = assembler_arbre(frequence(fichierL));
+	compresse(arbre, fichierL, fichierE);
+	decompresse(arbre, fichierL, fichierE);
+
 	return 0;
 }
 
@@ -61,22 +67,6 @@ void ajouter_noeud_fin(nd n, int val, char letter)
 		courant->fils_droit = creer_noeud(val,letter);
 	} else {
 		courant->fils_gauche = creer_noeud(val,letter);
-	}
-}
-
-/*
-*	Function supprimer_noeud_fin
-*	Delete last node.
-*	Parameters:
-*	<ab arbre>	:(arbre) Struct of arbre
-*/
-void supprimer_noeud_fin(ab arbre)
-{
-	if(arbre!=NULL)
-	{
-		nd courant = arbre->last;
-		free(courant);
-		courant = NULL;
 	}
 }
 
@@ -137,17 +127,45 @@ void detruire_tout_noeud(nd* n)
 *	Function creer_arbre
 *	Create tree.
 *	Parameters:
-*	<int val>	:(int)	 Value we need to create the first node of tree
-*	<char letter>	:(char)		Symbol we need to found
+*	<nd node>	:(noeud)	Value of first node
 */
-ab creer_arbre(int val, char letter)
+ab creer_arbre(nd node)
 {
 	ab arb 		= (ab)malloc(sizeof(struct arbre));
-	nd* n 		= creer_noeud(val,letter);
-	nd* racine 	= n;
-	nd* last 	= n;
-
+	nd* racine 	= node;
 	return arb;
+}
+
+/*
+*	Function assembler_arbre
+*	Merge trees.
+*	Parameters:
+*	<nd node>	:(noeud)	 Value we need to create the first node of tree
+*	<ab arbre>	:(arbre)	 Symbol we need to found
+*/
+ab assembler_arbre(nd* node)
+{
+	if(node != NULL)
+	{
+		while (sizeof(node) != 1)
+		{
+			for(int i = 0; i < sizeof(node); i++)
+			{
+				for(int j = 1; j < sizeof(node); j++)
+				{
+					if(node[i]->val == node[j]->val)
+					{
+						node[i] = creer_noeud(node[i]->val + node[j]->val, NULL);
+						node[i]->fils_droit = node[i];
+						node[i]->fils_gauche = node[j];
+						free (node[j]);
+					}
+				}
+			}
+		}
+	}
+	ab arbre = creer_arbre(node[1]);
+	return arbre;
 }
 
 /*
@@ -160,15 +178,10 @@ void detruire_arbre(ab arbre)
 {
 	if(arbre != NULL)
 	{
-		nd* node = &arbre->racine;
 		detruire_tout_noeud(&arbre->racine);
 
-		free (arbre->n);
-		(arbre->n) = NULL;
 		free (arbre->racine);
 		(arbre->racine) = NULL;
-		free (arbre->last);
-		(arbre->last) = NULL;
 		free (arbre);
 		(arbre) = NULL;
 	}
@@ -212,6 +225,95 @@ int trouver_dans_arbre(ab arbre, int val)
 	}
 }
 
+
+//Huffman
+
+/*
+*	Function frequence
+*	Return tab frequence letter.
+*	Parameters:
+*	<FILE* fichierL>	:(FILE)	Pointer on reading file
+*/
+nd frequence (FILE* fichierL)
+{
+	nd noeud[53];
+    // file opening
+    char  buff[BUFF_SIZE] ;
+    int   lines ;
+
+    if (!(fichierL = fopen("leture.txt", "r")))
+    {
+       fprintf (stderr, "%s\n", "Cannot open file") ; 
+       exit (EXIT_FAILURE) ;
+    }
+
+    // counters
+    int spaces = 0;
+    int caract_occurences[ALPHABET*2];
+    for(int i = 0; i < ALPHABET*2; ++i)
+    {
+        caract_occurences[i] = 0;
+    }
+
+    // reading each line
+    while (fgets(buff, BUFF_SIZE, fichierL))
+    {
+        // reading each char
+        for (int i = 0; i < (int)strlen(buff); ++i) 
+        {
+            // handling spaces
+            if(buff[i] == 32)
+            {
+                ++spaces;
+                continue;
+            }
+
+            // handling lowercase
+            if(buff[i] >= BEG_LOWER && buff[i] <= END_LOWER)
+            {
+                ++caract_occurences[buff[i] - BEG_LOWER];
+            }
+
+            // handling uppercase
+            if(buff[i] >= BEG_UPPER && buff[i] <= END_UPPER)
+            {
+                ++caract_occurences[buff[i] - BEG_UPPER+ALPHABET];
+            }
+        }
+    }
+    fclose (fichierL) ;
+
+    // displaying result
+    for (int i = 0; i < ALPHABET; ++i)
+    {
+        printf(
+            "%c: %d\t|\t%c: %d\n", 
+            BEG_LOWER + i, 
+            caract_occurences[i], 
+            BEG_UPPER + i, 
+            caract_occurences[i+ALPHABET]
+        );
+    }
+
+    for (int j = 0; j<53; j++)
+    {	
+    	if(j<26)
+    	{
+    		noeud [j] = creer_noeud(caract_occurences[j],  BEG_LOWER + j);
+    	}
+    	if(j>26 && j<52)
+    	{
+    		noeud [j] = creer_noeud(caract_occurences[j],  BEG_UPPER + j);
+    	}
+    	if(j == 52)
+    	{
+    		noeud [j] = creer_noeud(spaces, 32);
+    	}
+    	
+    }
+    return noeud;
+}
+
 /*
 *	Function trouver_prefixe
 *	Return code for letter.
@@ -232,24 +334,47 @@ char trouver_prefixe(ab arbre, char letter)
 	{
 		printf("Noeud vide \n");
 	} else {
-		if(courant->fils_gauche->alphabet == letter)
-		{	
-			prefixe = prefixe + '0';
-			courant = courant->fils_gauche;
-			return prefixe;
-		}
-		else 
+		if(courant->fils_gauche->alphabet == NULL)
 		{
-			if(courant->fils_droit->alphabet == letter)
-			{
-				prefixe = prefixe + '1';
+			courant = courant->fils_gauche;
+			if(courant->fils_gauche->alphabet == letter)
+			{	
+				prefixe = prefixe + '0';
+				courant = courant->fils_gauche;
 				return prefixe;
 			}
+			else 
+			{
+				if(courant->fils_droit->alphabet == letter)
+				{
+					prefixe = prefixe + '1';
+					return prefixe;
+				}
+				courant = courant->fils_droit;
+				prefixe = prefixe + '1';
+			}
+		}
+		if(courant->fils_droit->alphabet == NULL)
+		{
 			courant = courant->fils_droit;
-			prefixe = prefixe + '1';
+			if(courant->fils_gauche->alphabet == letter)
+			{	
+				prefixe = prefixe + '0';
+				courant = courant->fils_gauche;
+				return prefixe;
+			}
+			else 
+			{
+				if(courant->fils_droit->alphabet == letter)
+				{
+					prefixe = prefixe + '1';
+					return prefixe;
+				}
+				courant = courant->fils_droit;
+				prefixe = prefixe + '1';
+			}
 		}
 	}
-	return prefixe;
 }
 
 /*
@@ -299,7 +424,6 @@ void compresse(ab arbre, FILE* fichierL, FILE* fichierE)
 
 	fclose(fichierL);
 	fclose(fichierE);
-	return 0;
 }
 
 /*
@@ -334,7 +458,6 @@ void decompresse(ab arbre, FILE* fichierL, FILE* fichierE)
 
 	fclose(fichierL);
 	fclose(fichierE);
-	return 0;
 }
 
 /*
