@@ -413,7 +413,7 @@ void compresse(ab arbre, FILE* fichierL, FILE* fichierE)
 		{
 			caractere = fgetc(fichierL);
 			code = creer_code_lettre(arbre, caractere);
-			fprintf(fichierE, "%d\n", code);
+			fprintf(fichierE, "%d\n", (byte)code);
 			fprintf(stdout, "%d\n", code);
 		} while (caractere != EOF);
 	}
